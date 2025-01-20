@@ -57,14 +57,14 @@ struct MonthCell: View {
             .padding(.horizontal, 16)
             Spacer(minLength: 30)
         } header: {
-            VStack(alignment: .leading) {
+            VStack {
                 Text(style.monthFormat(month.date))
                     .font(style.monthFont)
                     .foregroundColor(.black.opacity(0.6))
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
             }
             .frame(maxWidth: .infinity)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
             .background(Color.white)
         }
         .id(month.id)

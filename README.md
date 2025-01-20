@@ -2,6 +2,8 @@
 
 **RangeDatePicker** is a SwiftUI component that enables users to select a date range by months through a clean and intuitive calendar interface. It's customizable and perfect for booking systems, subscriptions, reports, and other month-based date selection use cases.
 
+Suppotrs iOS 15.0+
+
 ![Demo](Demo/Demo.gif?raw=true)
 
 ## Features
@@ -64,14 +66,15 @@ Here’s an example of using a custom style for the `RangeDatePicker`:
 RangeDatePicker(
     startDate: $startDate,
     endDate: $endDate,
-    style: RangeDatePickerStyle(
-        circleColor: .blue,
-        fillColor: .blue.opacity(0.2),
-        currentDayColor: .green,
-        selectedDayColor: .white,
-        dayFont: .caption,
+    style: .init(
+        circleColor: .yellow,
+        fillColor: .yellow.opacity(0.2),
+        fillCornerRadius: 20,
+        selectedDayColor: .black,
+        currentDayColor: .brown,
+        dayFont: .headline,
         currentDayFont: .headline.bold(),
-        monthFont: .title.bold()
+        monthFont: .title2.bold()
     )
 )
 ```
