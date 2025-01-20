@@ -13,7 +13,7 @@
 
 ## Installation
 
-Instalação via Swift Package Manager:
+Installation via Swift Package Manager:
 
 ```url
 https://github.com/Lumyk/RangeDatePicker.git
