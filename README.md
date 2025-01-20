@@ -2,7 +2,7 @@
 
 **RangeDatePicker** is a SwiftUI component that enables users to select a date range by months through a clean and intuitive calendar interface. It's customizable and perfect for booking systems, subscriptions, reports, and other month-based date selection use cases.
 
-Suppotrs iOS 15.0+
+Support iOS 15.0+
 
 ![Demo](Demo/Demo.gif?raw=true)
 
