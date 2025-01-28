@@ -85,10 +85,15 @@ public struct RangeDatePicker: View {
                 }
                 .onAppear {
                     months = service.months(monthsRange: monthsRange)
-                    guard let current = months.first(where: { service.isCurrent($0) }) else { return }
+
+                    // Searching for the month.
+                    // If selected, scroll to the month of 'startDate'. Otherwise, scroll to the current month
+                    guard let month = months.first(where: { service.isCurrent($0, date: startDate ?? .now) }) else {
+                        return
+                    }
                     // Need dalay to wait for all cells rendering
                     DispatchQueue.main.async {
-                        proxy.scrollTo(current.id, anchor: .top)
+                        proxy.scrollTo(month.id, anchor: .top)
                     }
                 }
             }
