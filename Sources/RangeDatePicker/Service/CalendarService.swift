@@ -31,29 +31,39 @@ class CalendarService: ObservableObject {
         var components = DateComponents()
         components.month = month
         components.year = year
+        components.day = 1 // Start with the first day of the month
 
-        guard let date = calendar.date(from: components) else { return [] }
-        guard let daysRange = calendar.range(of: .day, in: .month, for: date) else { return [] }
-        guard let weeksInMonth = calendar.range(of: .weekOfMonth, in: .month, for: date)?.count else { return [] }
-        guard let daysInWeek = calendar.range(of: .weekday, in: .weekOfMonth, for: date)?.count else { return [] }
+        guard let firstDayOfMonth = calendar.date(from: components) else { return [] }
+        guard let daysRange = calendar.range(of: .day, in: .month, for: firstDayOfMonth) else { return [] }
+        guard let daysInWeek = calendar.range(of: .weekday, in: .weekOfMonth, for: firstDayOfMonth)?.count else { return [] }
+
+        // Calculate the weekday of the first day of the month
+        let firstWeekday = calendar.firstWeekday - 1 // -1 because first day starts from 1
+        let firstDayWeekday = calendar.component(.weekday, from: firstDayOfMonth) - 1
+        let shiftedFirstDayWeekday = (firstDayWeekday - firstWeekday + daysInWeek) % daysInWeek
+
+        // Calculate the total number of weeks in the month, including partial weeks
+        let totalWeeks = Int(ceil(Double(daysRange.count + shiftedFirstDayWeekday) / Double(daysInWeek)))
 
         // Create days in month matrix. Set nil for all days
         let matrix: [[Day?]] = Array(
             repeating: Array(repeating: nil, count: daysInWeek),
-            count: weeksInMonth
+            count: totalWeeks
         )
-
-        let firstWeekday = calendar.firstWeekday - 1 // -1 need because first day start from 1
 
         // Fill matrix with days (Spaces at the month start and end will be nil)
         let days = daysRange.reduce(into: matrix) { matrix, day in
             components.day = day
             guard let date = calendar.date(from: components) else { return }
             let dayInWeek = calendar.component(.weekday, from: date) - 1 // -1 need because first day start from 1
-            // Normolize order for current locale
-            let shiftedDayInWeek = (dayInWeek - firstWeekday + daysInWeek) % daysInWeek
-            let weekInMonth = calendar.component(.weekOfMonth, from: date) - 1 // -1 need because first week start from 1
 
+            // Normolize the order for current locale
+            let shiftedDayInWeek = (dayInWeek - firstWeekday + daysInWeek) % daysInWeek
+
+            // Calculate the week of the month
+            let weekInMonth = (day + shiftedFirstDayWeekday - 1) / daysInWeek
+
+            // Assign the day to the correct position in the matrix
             matrix[weekInMonth][shiftedDayInWeek] = .init(
                 date: date,
                 isToday: calendar.isDateInToday(date),
@@ -96,9 +106,9 @@ class CalendarService: ObservableObject {
         return day.date >= startDate && day.date <= endDate
     }
 
-    func isCurrent(_ month: Month) -> Bool {
-        let currentYear = calendar.component(.year, from: .now)
-        let currentMonth = calendar.component(.month, from: .now)
+    func isCurrent(_ month: Month, date: Date = .now) -> Bool {
+        let currentYear = calendar.component(.year, from: date)
+        let currentMonth = calendar.component(.month, from: date)
 
         return month.year == currentYear && month.month == currentMonth
     }
